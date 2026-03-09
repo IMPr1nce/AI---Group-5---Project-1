@@ -1,0 +1,5 @@
+# Ignore Log Files
+*.log
+
+# Ignore Virtual Environment
+.venv
