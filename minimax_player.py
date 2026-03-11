@@ -171,4 +171,4 @@ def main():
         game_socket.send(pickle.dumps([x,y]))
         
 if __name__ == '__main__':
-    main()
+    main() 
