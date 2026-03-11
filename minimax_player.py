@@ -8,6 +8,9 @@ from reversi import reversi
 CORNERS = [(0,0), (0, 7), (7, 0), (7, 7)]
 
 
+MAX,MIN = float('inf'), float('-inf')
+
+
 def main():
     game_socket = socket.socket()
     game_socket.connect(('127.0.0.1', 33333))
@@ -91,7 +94,7 @@ def main():
             total_player_score = (corner_score * cs_mult) + (pieces_score * ps_mult) + (mobility_socre * ms_mult)
             return int(total_player_score)
 
-        def MM_Algorithm(board: np.ndarray, turn: int, depth: int, curr_player: int) -> int:
+        def MM_Algorithm(board: np.ndarray, turn: int, depth: int, curr_player: int, alpha: int, beta: int) -> int:
             """Recursive MM_Algorithm algorithm"""
             legal_moves = find_available_moves(board, turn)
             opponent = -turn
@@ -112,7 +115,7 @@ def main():
                 
                 # Skip curr_player's turn
                 else:
-                    return MM_Algorithm(board, opponent, depth-1, curr_player)
+                    return MM_Algorithm(board, opponent, depth-1, curr_player,alpha,beta)
             
             
             # Maximizing player
@@ -122,10 +125,12 @@ def main():
                 # Test all moves
                 for move in legal_moves:
                     new_board = use_turn(board, move, turn)
-                    score = MM_Algorithm(new_board, opponent, depth - 1, curr_player)
-                    
+                    score = MM_Algorithm(new_board, opponent, depth - 1, curr_player, alpha, beta)
                     # Find highest score
                     highest_score = max(highest_score, score)
+                    alpha = max(alpha,highest_score)
+                    if beta <= alpha:
+                        break
                 return highest_score
             
             # Minimizing player
@@ -134,10 +139,13 @@ def main():
                 
                 for move in legal_moves:
                     new_board = use_turn(board, move, turn)
-                    score = MM_Algorithm(new_board, opponent, depth-1, curr_player)
+                    score = MM_Algorithm(new_board, opponent, depth-1, curr_player, alpha, beta)
                     
                     # Find lowest score
                     lowest_score = min(lowest_score, score)
+                    beta = min(beta,lowest_score)
+                    if beta <= alpha:
+                        break
                 return lowest_score
         
         
@@ -150,12 +158,12 @@ def main():
         moves = find_available_moves(board, turn)
         
         # Decide tree depth
-        depth = 3
+        depth = 5
 
         for move in moves:
             new_board = use_turn(board, move, turn)
-            score = MM_Algorithm(new_board, -turn, depth-1, turn)
-            if max(score, best_root_score) == score:
+            score = MM_Algorithm(new_board, -turn, depth-1, turn,MIN,MAX)
+            if best_root_score<= score:
                 best_root_score = max(score, best_root_score)
                 x, y = move
 
