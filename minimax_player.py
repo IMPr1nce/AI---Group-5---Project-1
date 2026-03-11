@@ -162,7 +162,7 @@ def main():
 
         for move in moves:
             new_board = use_turn(board, move, turn)
-            score = MM_Algorithm(new_board, -turn, depth-1, turn,MIN,MAX)
+            score = MM_Algorithm(new_board, -turn, depth-1, turn,MIN,MAX )
             if best_root_score<= score:
                 best_root_score = max(score, best_root_score)
                 x, y = move
