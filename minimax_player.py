@@ -8,7 +8,7 @@ from reversi import reversi
 CORNERS = [(0,0), (0, 7), (7, 0), (7, 7)]
 
 
-MAX,MIN = float('inf'), float('-inf')
+MAX,MIN = float('inf'),float('-inf')
 
 
 def main():
